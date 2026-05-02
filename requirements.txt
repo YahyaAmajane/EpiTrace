@@ -1,0 +1,14 @@
+# Data Manipulation & API
+pandas
+numpy
+requests
+python-dotenv
+
+# Time Series & Modélisation
+prophet
+statsmodels
+pmdarima
+
+# Dashboarding
+streamlit
+plotly

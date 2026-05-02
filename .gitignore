@@ -1,0 +1,12 @@
+# Ignorer l'environnement virtuel
+venv/
+__pycache__/
+
+# Ignorer les clés API et mots de passe
+.env
+
+# Ignorer les données (optionnel, mais recommandé pour les gros fichiers)
+data/brutes/*
+data/traitees/*
+!data/brutes/.gitkeep
+!data/traitees/.gitkeep
