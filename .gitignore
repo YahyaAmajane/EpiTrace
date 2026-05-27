@@ -12,4 +12,4 @@ data/traitees/*
 !data/brutes/.gitkeep
 !data/traitees/.gitkeep
 
-!data/traitees/epitrace_cube_olap.csv
+!data/traitees/epitrace_cube_olap_final.csv
