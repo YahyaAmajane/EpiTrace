@@ -8,5 +8,6 @@ __pycache__/
 # Ignorer les données (optionnel, mais recommandé pour les gros fichiers)
 data/brutes/*
 data/traitees/*
+!data/traitees/epitrace_cube_olap.csv
 !data/brutes/.gitkeep
 !data/traitees/.gitkeep
