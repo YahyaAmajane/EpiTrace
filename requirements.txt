@@ -1,14 +1,24 @@
-# Data Manipulation & API
+# EPI-TRACE : DÉPENDANCES DU PROJET
+
+# 1. Data Manipulation & API
 pandas
 numpy
 requests
 python-dotenv
 
-# Time Series & Modélisation
+# 2. Modélisation Classique & Statistiques
 prophet
 statsmodels
 pmdarima
+scikit-learn
 
-# Dashboarding
+# 3. Deep Learning (Cœur Prédictif)
+tensorflow
+protobuf>=4.25.3
+
+# 4. Intelligence Artificielle (Agent LLM & RAG)
+google-genai
+
+# 5. Interface Utilisateur & Dashboarding
 streamlit
 plotly
