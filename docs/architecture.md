@@ -10,7 +10,7 @@ Avant toute modélisation, chaque variable du cube a été analysée et validée
 
 ### Corrélation de Pearson (Force du signal synchrone)
 * **Topic_Toux** ($r = +0.842$) et **Topic_Grippe** ($r = +0.812$) : Forte corrélation avec l'incidence clinique.
-* **Topic_Grippe** en particulier montre que le volume de recherche est un indicateur synchrone extrêmement puissant de l'intensité de l'épidémie.
+* **Topic_Fievre** ($r = +0.655$) : Corrélation positive modérée à forte (la fièvre est un symptôme majeur des épidémies d'IRA).
 * **Température** ($r = −0.604$) : Corrélation négative marquée (le froid engendre une hausse de l'incidence).
 
 ### Causalité de Granger ($p \text{ } \lt \text{ } 0.05$)
@@ -18,8 +18,12 @@ Nous avons soumis nos séries temporelles à des tests de causalité de Granger 
 
 * **Humidité** ($p = 0.0058$ au lag de 2 semaines) $\to$ **Causal** ✅
 * **Température** ($p = 0.0185$ au lag de 4 semaines) $\to$ **Causal** ✅
-* **Google Trends Grippe/Toux** ($p = 0.0242$ et $p = 0.0347$ au lag de 3 semaines) $\to$ **Causaux** ✅. Pour le **Topic_Grippe**, le lag de 3 semaines montre que les recherches web anticipent de près de 21 jours les publications officielles du réseau Sentinelles.
+* **Google Trends Grippe/Toux** ($p = 0.0242$ et $p = 0.0347$ au lag de 3 semaines) $\to$ **Causaux** ✅
 * **Ratio de vacances scolaires** ($p = 0.0006$ au lag de 1 semaine) $\to$ **Causal** ✅
+
+> [!NOTE]
+> **Pourquoi avoir conservé le `Topic_Fievre` malgré son échec au test de Granger ($p > 0.05$) ?**  
+> Bien que les requêtes associées à la "fièvre" n'apportent pas d'information prédictive statistiquement causale au sens de Granger (qui cherche un décalage temporel linéaire strict), la fièvre est un symptôme clinique clé des Infections Respiratoires Aiguës (IRA). Conserver ce topic dans le cube de caractéristiques permet au réseau de neurones BiLSTM d'apprendre des relations non linéaires complexes et d'évaluer plus précisément la sévérité des pics épidémiques.
 
 ### Feature Engineering : Le Ratio Continu de Vacances
 Les épidémies hivernales se propageant fortement par le brassage des enfants à l'école, nous avons intégré le calendrier scolaire. Plutôt qu'une variable binaire (0 ou 1) trop abrupte pour la descente de gradient, nous avons conçu un **ratio continu de vacances scolaires** $\in [0.0, 1.0]$. 
