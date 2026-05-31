@@ -12,7 +12,7 @@ Avant toute modélisation, chaque variable du cube a été analysée et validée
 * **Topic_Toux** ($r = +0.842$) et **Topic_Grippe** ($r = +0.812$) : Forte corrélation avec l'incidence clinique.
 * **Température** ($r = −0.604$) : Corrélation négative marquée (le froid engendre une hausse de l'incidence).
 
-### Causalité de Granger ($p < 0.05$)
+### Causalité de Granger ($p \text{ } \lt \text{ } 0.05$)
 Nous avons soumis nos séries temporelles à des tests de causalité de Granger pour vérifier si les signaux temps réel contiennent un pouvoir prédictif statistiquement significatif au-delà de l'historique de l'incidence :
 
 * **Humidité** ($p = 0.0058$ au lag de 2 semaines) $\to$ **Causal** ✅

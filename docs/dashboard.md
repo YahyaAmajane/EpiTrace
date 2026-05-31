@@ -12,9 +12,9 @@ Cet onglet offre une vue globale instantanée de l'état sanitaire de la région
 
 * **7 Indicateurs Clés (KPIs) en temps réel** : Incidence présente, Prévision à J+7, Température, Humidité, et les volumes de recherche Google pour les symptômes *Toux*, *Grippe* et *Fièvre*.
 * **Niveau d'Alerte Tactique** : Affiche le niveau d'alerte ORSAN calculé sur les percentiles de distribution réels de 2021 à 2026 :
-    * 🟢 **VEILLE** : Incidence $< 14\,206$ cas (Percentile 50).
-    * 🟡 **PRÉ-ALERTE** : Incidence $< 20\,076$ cas (Percentile 75).
-    * 🟠 **PLAN BLANC** : Incidence $< 26\,866$ cas (Percentile 85).
+    * 🟢 **VEILLE** : Incidence $\lt 14\,206$ cas (Percentile 50).
+    * 🟡 **PRÉ-ALERTE** : Incidence $\lt 20\,076$ cas (Percentile 75).
+    * 🟠 **PLAN BLANC** : Incidence $\lt 26\,866$ cas (Percentile 85).
     * 🔴 **ALERTE ROUGE** : Incidence $\ge 26\,866$ cas (Percentile 85+).
 * **Radar des Signaux exogènes** : Visualisation multidimensionnelle de la force des signaux précurseurs de la semaine.
 
@@ -59,4 +59,4 @@ Un outil d'explicabilité par l'interaction pour les cliniciens et le jury :
 * **Interprète Automatique** : L'application analyse la différence de courbe et affiche un diagnostic textuel de couleur dynamique :
     * 🔴 **AGGRAVATION** : Hausse marquée de l'incidence prévue.
     * 🟢 **AMÉLIORATION** : Baisse significative de la charge prévue.
-    * 🔵 **NEUTRE** : Variation négligeable ($< 500$ cas).
+    * 🔵 **NEUTRE** : Variation négligeable ($\lt 500$ cas).
