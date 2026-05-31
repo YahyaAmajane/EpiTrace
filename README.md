@@ -4,8 +4,11 @@
 [![Framework](https://img.shields.io/badge/Framework-Streamlit-FF4B4B.svg)](https://streamlit.io/)
 [![Deep Learning](https://img.shields.io/badge/DL-TensorFlow%20%2F%20Keras-orange.svg)](https://tensorflow.org/)
 [![ENSAM Meknès](https://img.shields.io/badge/ENSAM-IATD--SI-cyan.svg)](http://www.ensam.umi.ac.ma/)
+[![Documentation](https://img.shields.io/badge/docs-Read%20the%20Docs-blue.svg)](https://epitrace.readthedocs.io)
 
 **Epi-Trace** est un système intelligent d'aide à la décision hospitalière conçu pour prédire la charge et l'incidence des urgences médicales en Île-de-France à **J+7**. 
+
+📖 **Documentation en ligne** : La documentation complète du projet (installation, architecture IA, API Python) est disponible sur [epitrace.readthedocs.io](https://epitrace.readthedocs.io).
 
 L'innovation majeure d'Epi-Trace réside dans sa capacité à surmonter la **latence de 12 jours** du réseau Sentinelles (INSERM) en reconstruisant le présent (*Nowcasting*) via des signaux exogènes (Google Trends et données météorologiques) pour alimenter ensuite une prévision à court terme (*Forecasting*).
 
@@ -116,9 +119,15 @@ EpiTrace/
 │   └── traitees/               # Cubes OLAP finaux (alignement temporel ISO) pour l'entraînement et le live
 │
 ├── docs/
+│   ├── index.md                # Page d'accueil et chiffres clés de la documentation
+│   ├── installation.md         # Guide d'installation et d'exécution (Démo vs Live)
+│   ├── architecture.md         # Preuves statistiques (Granger, Pearson) et détails des modèles (MLP, BiLSTM)
+│   ├── dashboard.md            # Guide opérationnel du centre de commande Streamlit (5 onglets)
+│   ├── reference_api.md        # Référence technique auto-générée de l'API Python (docstrings)
 │   └── protocole_orsan_reb.md  # Fichier de référence contenant le protocole de crise ministériel ORSAN
 │
 ├── build_live_cube.py          # Script ETL d'orchestration qui aligne en direct les 3 APIs pour générer le cube live
+├── mkdocs.yml                  # Configuration globale de la documentation MkDocs (thème Material)
 ├── requirements.txt            # Dépendances du projet (TensorFlow, Streamlit, Pandas, Scikit-learn, etc.)
 └── .gitignore                  # Configuration des fichiers ignorés par Git (fichiers d'environnement, env virtuels, caches, etc.)
 ```
