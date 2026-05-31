@@ -32,21 +32,12 @@ graph TD
 
     subgraph "Étape 1 : NOWCASTING (Estimation S0)"
         B[Nowcaster MLP]
-        A1 --> B
-        A2 --> B
-        A3 --> B
-        A4 --> B
         C["Incidence Présente Estimée (S0)"]
         B --> C
     end
 
     subgraph "Étape 2 : FORECASTING (Prédiction S+1)"
         D[Forecaster BiLSTM]
-        A1 --> D
-        A2 --> D
-        A3 --> D
-        A4 --> D
-        C -->|Injection du présent S0| D
         E["Prédiction Incidence Future (S+1)"]
         D --> E
     end
@@ -57,6 +48,18 @@ graph TD
         E --> F
         E --> G
     end
+
+    %% Relations transverses (définies hors des subgraphs pour éviter les erreurs de rendu)
+    A1 --> B
+    A2 --> B
+    A3 --> B
+    A4 --> B
+
+    A1 --> D
+    A2 --> D
+    A3 --> D
+    A4 --> D
+    C -->|Injection du présent S0| D
 
     style C fill:#FF9500,stroke:#333,stroke-width:2px,color:#000
     style E fill:#00C6FF,stroke:#333,stroke-width:2px,color:#000
