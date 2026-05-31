@@ -99,6 +99,12 @@ Chaque variable exogène a été validée par des tests rigoureux de **corrélat
 ```text
 EpiTrace/
 │
+├── .readthedocs.yaml           # Configuration pour la compilation automatique sur Read the Docs
+├── build_live_cube.py          # Script ETL d'orchestration qui aligne en direct les 3 APIs pour générer le cube live
+├── mkdocs.yml                  # Configuration globale de la documentation MkDocs (thème Material)
+├── requirements.txt            # Dépendances complètes du projet (TensorFlow, Streamlit, Pandas, etc.)
+├── .gitignore                  # Fichiers ignorés par Git (fichiers d'environnement, env virtuels, caches, etc.)
+│
 ├── app/
 │   ├── app.py                  # Centre de commandement tactique (Streamlit) gérant l'interface et les modes
 │   └── app_utils.py            # Chargement des modèles d'IA (MLP/BiLSTM), pré-traitements et calculs de percentiles
@@ -112,24 +118,24 @@ EpiTrace/
 ├── notebooks/
 │   ├── 01_eda_et_correlation.ipynb  # Preuves statistiques complètes (Pearson, Granger Causality, OLS)
 │   ├── 02_modelisation.ipynb        # Benchmark d'apprentissage (SARIMAX, Prophet, BiLSTM) et diagnostics
-│   └── epi_trace_nowcast.keras      # Poids entraînés du modèle de Nowcasting pour la production
+│   ├── epi_trace_nowcast.keras      # Poids entraînés du modèle de Nowcasting (MLP Delta)
+│   ├── epi_trace_bilstm.keras       # Poids entraînés du modèle de prévision (BiLSTM Forecaster)
+│   └── epi_trace_scaler.pkl         # Scaler d'entraînement MinMaxScaler sauvegardé
 │
 ├── data/
 │   ├── brutes/                 # Fichiers CSV bruts directement extraits des sources et APIs
 │   └── traitees/               # Cubes OLAP finaux (alignement temporel ISO) pour l'entraînement et le live
 │
-├── docs/
-│   ├── index.md                # Page d'accueil et chiffres clés de la documentation
-│   ├── installation.md         # Guide d'installation et d'exécution (Démo vs Live)
-│   ├── architecture.md         # Preuves statistiques (Granger, Pearson) et détails des modèles (MLP, BiLSTM)
-│   ├── dashboard.md            # Guide opérationnel du centre de commande Streamlit (5 onglets)
-│   ├── reference_api.md        # Référence technique auto-générée de l'API Python (docstrings)
-│   └── protocole_orsan_reb.md  # Fichier de référence contenant le protocole de crise ministériel ORSAN
-│
-├── build_live_cube.py          # Script ETL d'orchestration qui aligne en direct les 3 APIs pour générer le cube live
-├── mkdocs.yml                  # Configuration globale de la documentation MkDocs (thème Material)
-├── requirements.txt            # Dépendances du projet (TensorFlow, Streamlit, Pandas, Scikit-learn, etc.)
-└── .gitignore                  # Configuration des fichiers ignorés par Git (fichiers d'environnement, env virtuels, caches, etc.)
+└── docs/
+    ├── index.md                # Page d'accueil et chiffres clés de la documentation (contextes IRA et IATD-SI)
+    ├── installation.md         # Guide de démarrage rapide et configuration de l'environnement virtuel
+    ├── architecture.md         # Preuves statistiques (Granger, Pearson) et détails des modèles (MLP, BiLSTM)
+    ├── dashboard.md            # Guide opérationnel du centre de commande Streamlit (5 onglets)
+    ├── reference_api.md        # Schéma du cube OLAP, fiches techniques des modèles et docstrings des modules
+    ├── protocole_orsan_reb.md  # Fichier de référence contenant le protocole de crise ministériel ORSAN
+    ├── requirements.txt        # Dépendances légères spécifiques pour le build de Read the Docs
+    └── javascripts/
+        └── mathjax.js          # Script d'intégration pour le rendu d'équations mathématiques via MathJax
 ```
 
 ---
@@ -146,7 +152,7 @@ EpiTrace/
 git clone https://github.com/YahyaAmajane/EpiTrace.git
 cd EpiTrace
 python -m venv venv
-venv\Scripts\activate      # Sur Windows
+venv\Scripts\activate      # Sur Windows (PowerShell: .\venv\Scripts\Activate.ps1)
 source venv/bin/activate    # Sur macOS/Linux
 ```
 
@@ -162,28 +168,35 @@ SERPAPI_KEY=votre_cle_serpapi_ici
 GEMINI_API_KEY=votre_cle_gemini_ici
 ```
 
-### 4. Lancement de l'Application & Mode Démo
+### 4. Lancement de l'Application & Modes d'Exécution
 
-Pour démarrer l'application, deux approches sont possibles selon que vous souhaitez générer de nouvelles données en direct ou utiliser notre jeu de données de démonstration pré-configuré :
+Deux options s'offrent à vous pour faire tourner et tester le système :
 
-#### Option A : Exécuter avec les données de Démo (Recommandé pour un test rapide)
-L'application est configurée pour s'exécuter directement sans clé API supplémentaire en utilisant le fichier `data/traitees/epitrace_cube_live.csv` pré-rempli. Ce fichier contient l'historique stable aligné et nettoyé jusqu'à aujourd'hui.
-Lancez simplement l'application Streamlit :
-```bash
-streamlit run app/app.py
-```
+#### 🟢 Option A : Exécution en mode Démo (Option la plus rapide — Idéal Jury)
+C'est l'option recommandée pour une démonstration immédiate. Le projet est pré-configuré avec un cube de données OLAP extrait et nettoyé : `data/traitees/epitrace_cube_live.csv`.
+* **Dernière prévision** : Ce fichier contient l'historique complet et permet de lancer des prédictions directes pour la **première semaine de juin 2026** (semaine 23 de 2026).
+* **Lancement** : Dans ce mode, aucune clé d'API tierce n'est requise pour le cube de données. Lancez simplement l'application Streamlit :
+  ```bash
+  streamlit run app/app.py
+  ```
+  *(Note : L'onglet "Agent IA" nécessite tout de même votre clé `GEMINI_API_KEY` dans le fichier `.env` pour pouvoir générer ses rapports de crise).*
 
-#### Option B : Mettre à jour les données en direct (ETL complet)
-Si vous souhaitez interroger les APIs en temps réel et générer un nouveau cube de données actualisé, lancez d'abord le pipeline ETL :
-```bash
-python build_live_cube.py
-```
-*Note : Cette étape nécessite que vous ayez renseigné votre `SERPAPI_KEY` dans le fichier `.env` pour récupérer les dernières données Google Trends.*
-
-Une fois le cube reconstruit en direct, vous pouvez lancer l'application pour générer des prévisions basées sur ces nouvelles données :
-```bash
-streamlit run app/app.py
-```
+#### 🔴 Option B : Reconstruction du Cube en direct (ETL complet & Dates personnalisées)
+Si vous souhaitez actualiser la base de données en direct ou cibler une date de fin spécifique :
+1. **Télécharger la Vérité Terrain** :
+   - Allez sur le site officiel du Réseau Sentinelles : [sentiweb.fr](https://www.sentiweb.fr/).
+   - Téléchargez le fichier de données historiques régionales pour la grippe / affections respiratoires aiguës (IRA).
+   - Placez le fichier CSV téléchargé dans le dossier `data/brutes/` (par défaut, le script cherche le fichier nommé `inc-25-RDD-ds2.csv`).
+2. **Exécuter le pipeline ETL** :
+   - Lancez le script ETL d'orchestration qui interrogera les APIs Météo et Google Trends (via SerpAPI) en direct pour aligner temporellement le cube :
+     ```bash
+     python build_live_cube.py
+     ```
+3. **Lancement de l'interface** :
+   - Une fois le cube de données actualisé généré, lancez le dashboard Streamlit :
+     ```bash
+     streamlit run app/app.py
+     ```
 
 L'application sera accessible dans votre navigateur à l'adresse : `http://localhost:8501`.
 
