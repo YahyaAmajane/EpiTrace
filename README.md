@@ -116,8 +116,8 @@ EpiTrace/
 │   └── agent_llm.py            # Moteur RAG qui bride le LLM Gemini avec les directives médicales
 │
 ├── notebooks/
-│   ├── 01_eda_et_correlation.ipynb  # Analyse exploratoire (EDA) & validations statistiques (Corrélations de Pearson, tests de causalité de Granger pour valider la météo et SerpAPI, régression OLS pour le ratio vacances)
-│   ├── 02_modelisation.ipynb        # Benchmark de prévision (ARIMA/SARIMAX, Prophet, BiLSTM), entraînement du Nowcaster MLP Delta, validation des hyperparamètres et stratégies anti-overfitting
+│   ├── 01_eda_et_correlation.ipynb  # Analyse exploratoire (EDA), corrélations de Pearson, régression OLS (ratio vacances) et génération du cube OLAP final
+│   ├── 02_modelisation.ipynb        # Tests de causalité de Granger (SerpAPI/météo), benchmark (SARIMAX, Prophet, BiLSTM), entraînement/validation du Nowcaster (MLP Delta) et techniques anti-overfitting
 │   ├── epi_trace_nowcast.keras      # Poids entraînés du modèle de Nowcasting (MLP Delta) pour combler la fenêtre aveugle de 12j
 │   ├── epi_trace_bilstm.keras       # Poids entraînés du modèle final de prévision (BiLSTM Forecaster) à J+7
 │   └── epi_trace_scaler.pkl         # Scaler d'entraînement MinMaxScaler sauvegardé pour éviter le Data Leakage en production
