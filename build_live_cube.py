@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 SERPAPI_KEY = os.getenv("SERPAPI_KEY")
 
-print("=== 🚀 DÉMARRAGE DU PIPELINE ETL : MINI-CUBE LIVE (Version Longue) ===")
+print("===  DÉMARRAGE DU PIPELINE ETL : MINI-CUBE LIVE (Version Longue) ===")
 
 # --- ÉTAPE 1 : SENTINELLES ---
 def process_sentinelles(nom_fichier="sentinelles_latest.csv", fenetre_semaines=60): # <-- CHANGEMENT ICI (60 semaines)

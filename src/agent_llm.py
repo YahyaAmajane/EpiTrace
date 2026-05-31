@@ -6,17 +6,25 @@ from dotenv import load_dotenv
 load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
 
-if not api_key:
-    raise ValueError(" ERREUR : La clé GEMINI_API_KEY est introuvable dans le fichier .env")
-
-# 2. Initialisation du nouveau Client Google GenAI
-client = genai.Client(api_key=api_key)
+client = None
+if api_key:
+    # 2. Initialisation du nouveau Client Google GenAI
+    client = genai.Client(api_key=api_key)
 
 def generer_bulletin_alerte(cas_prevus, niveau_alerte, chemin_protocole="docs/protocole_orsan_reb.md"):
     """
     Agent RAG : Lit le protocole officiel et génère une alerte logistique 
     basée sur les prédictions du modèle BiLSTM.
     """
+    if client is None:
+        return (
+            "⚠️ **L'Agent IA RAG est désactivé** car la clé `GEMINI_API_KEY` est manquante ou "
+            "incorrecte dans le fichier `.env`.\n\n"
+            "Pour l'activer :\n"
+            "1. Créez un fichier `.env` à la racine du projet.\n"
+            "2. Ajoutez la ligne : `GEMINI_API_KEY=votre_cle_gemini`.\n"
+            "3. Redémarrez l'application."
+        )
     
     # Extraction du contexte (Le RAG)
     try:
@@ -60,6 +68,12 @@ def generer_bulletin_alerte(cas_prevus, niveau_alerte, chemin_protocole="docs/pr
 
 # --- Test du script ---
 if __name__ == "__main__":
+    import sys
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except AttributeError:
+        pass
+
     print(" Lancement de l'Agent Epi-Trace (Nouvelle Architecture GenAI)...")
     
     # Simulation d'une prédiction de votre BiLSTM (ex: 1450 cas -> Niveau 3)
