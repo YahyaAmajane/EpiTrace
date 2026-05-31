@@ -26,26 +26,26 @@ Epi-Trace combine deux modèles de Deep Learning pour éliminer cette latence :
 
 ```mermaid
 graph TD
-    subgraph "Données d'Entrée (Fenêtre Glissante de 12 Semaines)"
+    subgraph Entrees ["Données d'Entrée (Fenêtre Glissante de 12 Semaines)"]
         A1["Google Trends (T-11 à T0)"]
         A2["Météo: Temp & Humidité (T-11 à T0)"]
         A3["Calendrier Scolaire: Ratio Vacances (T-11 à T0)"]
         A4["Incidence Clinique Passée (T-11 à T-1)"]
     end
 
-    subgraph "Étape 1 : NOWCASTING (Estimation S0 à T0)"
+    subgraph Etape1 ["Étape 1 : NOWCASTING (Estimation S0 à T0)"]
         B["Nowcaster (MLP Delta)"]
         C["Incidence Estimée S0 (T0)"]
         B -->|Prédit la variation delta| C
     end
 
-    subgraph "Étape 2 : FORECASTING (Prédiction S+1 à T+1)"
+    subgraph Etape2 ["Étape 2 : FORECASTING (Prédiction S+1 à T+1)"]
         D["Forecaster (BiLSTM)"]
         E["Prédiction Incidence Future S+1 (T+1)"]
         D --> E
     end
 
-    subgraph "Étape 3 : AIDE À LA DÉCISION"
+    subgraph Etape3 ["Étape 3 : AIDE À LA DÉCISION"]
         F["Dashboard Streamlit (KPIs & Alerte Orsan)"]
         G["Agent RAG Gemini + Protocole ORSAN"]
         E --> F
@@ -65,9 +65,9 @@ graph TD
     A4 -->|Incidence historique - 11 sem| D
     C -->|Injection S0 - complétion du tenseur| D
 
-    style C fill:#FF9500,stroke:#333,stroke-width:2px,color:#000
-    style E fill:#00C6FF,stroke:#333,stroke-width:2px,color:#000
-    style G fill:#00E5A0,stroke:#333,stroke-width:2px,color:#000
+    style C fill:#FF9500,stroke:#333,stroke-width:2px
+    style E fill:#00C6FF,stroke:#333,stroke-width:2px
+    style G fill:#00E5A0,stroke:#333,stroke-width:2px
 ```
 
 ---
