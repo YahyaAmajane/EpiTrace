@@ -27,6 +27,7 @@ graph TD
         A1[Google Trends via SerpAPI]
         A2[Open-Meteo API]
         A3[Incidence Historique S-11 à S-1]
+        A4[Calendrier Scolaire (Ratio Vacances)]
     end
 
     subgraph "Étape 1 : NOWCASTING"
@@ -34,6 +35,7 @@ graph TD
         A1 --> B
         A2 --> B
         A3 --> B
+        A4 --> B
         C[Estimation présent : S0]
         B --> C
     end
@@ -42,6 +44,7 @@ graph TD
         D[Forecaster BiLSTM]
         C --> D
         A3 --> D
+        A4 --> D
         E[Prédiction Futur : S+1]
         D --> E
     end
