@@ -5,11 +5,10 @@ __pycache__/
 # Ignorer les clés API et mots de passe
 .env
 
-# Ignorer les données (optionnel, mais recommandé pour les gros fichiers)
-data/brutes/*
-data/traitees/*
+# data/brutes/*
+# data/traitees/*
 
-!data/brutes/.gitkeep
-!data/traitees/.gitkeep
+# !data/brutes/.gitkeep
+# !data/traitees/.gitkeep
 
 !data/traitees/epitrace_cube_olap_final.csv
