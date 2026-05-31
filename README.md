@@ -4,11 +4,11 @@
 [![Framework](https://img.shields.io/badge/Framework-Streamlit-FF4B4B.svg)](https://streamlit.io/)
 [![Deep Learning](https://img.shields.io/badge/DL-TensorFlow%20%2F%20Keras-orange.svg)](https://tensorflow.org/)
 [![ENSAM Meknès](https://img.shields.io/badge/ENSAM-IATD--SI-cyan.svg)](http://www.ensam.umi.ac.ma/)
-[![Documentation](https://img.shields.io/badge/docs-Read%20the%20Docs-blue.svg)](https://epitrace-cascade.readthedocs.io)
+[![Documentation](https://img.shields.io/badge/docs-Read%20the%20Docs-blue.svg)](https://epitrace-project.readthedocs.io)
 
-**Epi-Trace** est un système intelligent d'aide à la décision hospitalière conçu pour prédire la charge et l'incidence des urgences médicales en Île-de-France à **J+7**. 
+**Epi-Trace** est un système intelligent d'aide à la décision hospitalière conçu pour la gestion des tensions hospitalières liées aux **Infections Respiratoires Aiguës (IRA)**, prédisant la charge et l'incidence des urgences médicales en Île-de-France à **J+7**. 
 
-📖 **Documentation en ligne** : La documentation complète du projet (installation, architecture IA, API Python) est disponible sur [epitrace-cascade.readthedocs.io](https://epitrace-cascade.readthedocs.io).
+📖 **Documentation en ligne** : La documentation complète du projet (installation, architecture IA, API Python) est disponible sur [epitrace-project.readthedocs.io](https://epitrace-project.readthedocs.io).
 
 L'innovation majeure d'Epi-Trace réside dans sa capacité à surmonter la **latence de 12 jours** du réseau Sentinelles (INSERM) en reconstruisant le présent (*Nowcasting*) via des signaux exogènes (Google Trends et données météorologiques) pour alimenter ensuite une prévision à court terme (*Forecasting*).
 
@@ -202,4 +202,4 @@ L'application sera accessible dans votre navigateur à l'adresse : `http://local
 * **Yahya Amajane**
 * **Mohamed Amine Belasri**
 
-*ENSAM Meknès — Filière IATD-SI *
+*ENSAM Meknès — Filière IATD-SI (Intelligence Artificielle et Technologies des Données : Systèmes Industriels)*

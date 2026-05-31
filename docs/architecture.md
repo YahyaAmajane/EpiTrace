@@ -14,6 +14,7 @@ Avant toute modélisation, chaque variable du cube a été analysée et validée
 
 ### Causalité de Granger ($p < 0.05$)
 Nous avons soumis nos séries temporelles à des tests de causalité de Granger pour vérifier si les signaux temps réel contiennent un pouvoir prédictif statistiquement significatif au-delà de l'historique de l'incidence :
+
 * **Humidité** ($p = 0.0058$ au lag de 2 semaines) $\to$ **Causal** ✅
 * **Température** ($p = 0.0185$ au lag de 4 semaines) $\to$ **Causal** ✅
 * **Google Trends Grippe/Toux** ($p = 0.0242$ et $p = 0.0347$ au lag de 3 semaines) $\to$ **Causaux** ✅

@@ -56,31 +56,37 @@ GEMINI_API_KEY=votre_cle_gemini_ici
 
 Deux options s'offrent à vous pour faire tourner et tester le système :
 
-### 🟢 Option A : Exécution en mode Démo (Recommandé pour un test rapide)
-Le projet est livré avec un jeu de données pré-compilé et aligné jusqu'au présent : `data/traitees/epitrace_cube_live.csv`. 
-
-Dans ce mode, l'application fonctionne **directement sans requérir de clés d'API tierces pour la récolte des données** :
-```bash
-streamlit run app/app.py
-```
-*Note : L'onglet "Agent IA" aura tout de même besoin d'une clé `GEMINI_API_KEY` dans le fichier `.env` pour générer des bulletins.*
+### 🟢 Option A : Exécution en mode Démo (Option la plus rapide — Idéal Jury)
+C'est l'option recommandée pour une démonstration immédiate et sans tracas. Le projet est pré-configuré avec un cube de données OLAP extrait et nettoyé : `data/traitees/epitrace_cube_live.csv`.
+* **Dernière prévision** : Ce fichier contient l'historique complet et permet de lancer des prédictions directes pour la **première semaine de juin 2026** (semaine 23 de 2026).
+* **Lancement** : Dans ce mode, aucune clé d'API tierce n'est requise pour le cube de données. Lancez simplement l'application Streamlit :
+  ```bash
+  streamlit run app/app.py
+  ```
+  *(Note : L'onglet "Agent IA" aura tout de même besoin d'une clé `GEMINI_API_KEY` dans le fichier `.env` pour pouvoir générer ses rapports).*
 
 ---
 
-### 🔴 Option B : Reconstruction du Cube en temps réel (ETL Complet)
-Si vous souhaitez simuler un rafraîchissement complet en direct le lundi matin et interroger les sources externes :
+### 🔴 Option B : Reconstruction du Cube en temps réel (ETL Complet & Dates Personnalisées)
+Si vous souhaitez actualiser la base de données en direct ou cibler une date de fin spécifique :
 
-1. Assurez-vous d'avoir configuré votre `SERPAPI_KEY` dans le fichier `.env`.
-2. Lancez le script d'orchestration ETL :
-   ```bash
-   python build_live_cube.py
-   ```
-   Ce script va :
-   * Télécharger les dernières observations épidémiques locales.
-   * Interroger l'API **Open-Meteo** pour récupérer les données horaires de température et d'humidité récentes (latence 0j).
-   * Appeler **SerpAPI** pour scraper les indices de recherche sur Google (Toux, Grippe, Fièvre).
-   * Aligner et agréger le tout au format hebdomadaire ISO pour générer un nouveau fichier `epitrace_cube_live.csv` à jour.
-3. Lancez le Dashboard pour observer les prévisions actualisées par la cascade d'IA :
+1. **Clés d'APIs** : Assurez-vous d'avoir configuré vos clés `SERPAPI_KEY` et `GEMINI_API_KEY` dans votre fichier `.env`.
+2. **Télécharger la Vérité Terrain** :
+   - Allez sur le site officiel du Réseau Sentinelles : [sentiweb.fr](https://www.sentiweb.fr/).
+   - Téléchargez le fichier de données historiques régionales pour la grippe (ou les affections respiratoires aiguës).
+   - Placez le fichier CSV téléchargé dans le dossier `data/brutes/` (par défaut, le script cherche le fichier nommé `inc-25-RDD-ds2.csv`).
+3. **Exécuter le pipeline ETL** :
+   - Vous pouvez ouvrir le script `build_live_cube.py` et configurer la date de fin souhaitée dans les paramètres d'appel de fin (ex: fin 2026 ou autre).
+   - Lancez la reconstruction du cube :
+     ```bash
+     python build_live_cube.py
+     ```
+     Ce script va automatiquement :
+     - Lire et filtrer la vérité terrain locale depuis le fichier Sentinelles.
+     - Appeler l'API **Open-Meteo** pour extraire les données climatiques (températures, humidité) correspondantes.
+     - Scraper les volumes de recherche sur **Google Trends** via SerpAPI pour les mots-clés de symptômes.
+     - Aligner temporellement et fusionner toutes les sources en un cube OLAP propre.
+4. **Lancement du Dashboard** :
    ```bash
    streamlit run app/app.py
    ```

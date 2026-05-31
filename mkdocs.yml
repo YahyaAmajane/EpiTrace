@@ -1,5 +1,5 @@
 site_name: Epi-Trace
-site_url: https://epitrace-cascade.readthedocs.io
+site_url: https://epitrace-project.readthedocs.io
 repo_url: https://github.com/YahyaAmajane/EpiTrace
 repo_name: YahyaAmajane/EpiTrace
 
@@ -32,6 +32,10 @@ theme:
     - search.highlight
     - content.code.copy
 
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
+
 plugins:
   - search
   - mkdocstrings:
@@ -52,11 +56,13 @@ markdown_extensions:
   - tables
   - attr_list
   - md_in_html
+  - pymdownx.arithmatex:
+      generic: true
 
 nav:
   - Accueil: index.md
   - Guide d'Installation: installation.md
   - Architecture IA & Cascade: architecture.md
   - Centre de Commandement: dashboard.md
-  - Référence API Python: reference_api.md
+  - reference/api/python: reference_api.md
   - Protocole RAG ORSAN: protocole_orsan_reb.md

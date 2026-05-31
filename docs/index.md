@@ -1,8 +1,8 @@
 # 🏥 Bienvenue sur la Documentation d'Epi-Trace
 
-**Epi-Trace** est un système d'aide à la décision hospitalière en temps réel conçu pour prédire la charge des urgences médicales en Île-de-France à **J+7**.
+**Epi-Trace** est un système d'aide à la décision hospitalière en temps réel conçu pour la gestion des tensions hospitalières liées aux **Infections Respiratoires Aiguës (IRA)**, prédisant la charge des urgences médicales en Île-de-France à **J+7**.
 
-Ce projet a été réalisé par **Yahya Amajane** et **Mohamed Amine Belasri** dans le cadre de la filière **IATD-SI** (Ingénierie de l'Aide à la Décision & Technologies des Systèmes d'Information) à l'**ENSAM Meknès**.
+Ce projet a été réalisé par **Yahya Amajane** et **Mohamed Amine Belasri** dans le cadre de la filière **IATD-SI** (Intelligence Artificielle et Technologies des Données : Systèmes Industriels) à l'**ENSAM Meknès**.
 
 ---
 
