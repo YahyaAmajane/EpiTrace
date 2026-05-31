@@ -144,8 +144,8 @@ EpiTrace/
 
 ### Prérequis
 * Python 3.9 à 3.11
-* Un compte [SerpAPI](https://serpapi.com/) (pour rafraîchir Google Trends en temps réel - clé gratuite suffisante)
-* Une clé d'API Google Gemini (pour faire tourner l'agent IA décisionnel)
+* Un compte [SerpAPI](https://serpapi.com/) (**Optionnel** — requis uniquement si vous souhaitez rafraîchir en direct le cube de données de l'application via Google Trends, Option B)
+* Une clé d'API Google Gemini (requis uniquement pour faire fonctionner l'agent RAG d'aide à la décision)
 
 ### 1. Clonage du dépôt et environnement
 ```bash
@@ -164,9 +164,13 @@ pip install -r requirements.txt
 ### 3. Fichier de Configuration (`.env`)
 Créez un fichier `.env` à la racine du projet avec vos clés d'APIs :
 ```env
+# OPTIONNEL : Requis uniquement pour reconstruire/actualiser le cube de données (Option B)
 SERPAPI_KEY=votre_cle_serpapi_ici
+
+# REQUIS : Uniquement pour l'onglet de génération de directives par l'Agent RAG (Option A & B)
 GEMINI_API_KEY=votre_cle_gemini_ici
 ```
+*Note : Si vous utilisez uniquement le **mode Démo (Option A)** sans actualiser le cube de données ni générer de bulletin par l'Agent RAG, le fichier `.env` n'est pas strictement nécessaire pour démarrer l'application.*
 
 ### 4. Lancement de l'Application & Modes d'Exécution
 

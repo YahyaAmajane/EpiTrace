@@ -46,9 +46,13 @@ pip install -r requirements.txt
 ### 4. Configuration des variables d'environnement (`.env`)
 À la racine du projet, créez un fichier nommé `.env` et ajoutez vos clés secrètes :
 ```env
+# OPTIONNEL : Requis uniquement pour reconstruire/actualiser le cube de données (Option B)
 SERPAPI_KEY=votre_cle_serpapi_ici
+
+# REQUIS : Uniquement pour l'onglet de génération de directives par l'Agent RAG (Option A & B)
 GEMINI_API_KEY=votre_cle_gemini_ici
 ```
+*Note : Si vous utilisez uniquement le **mode Démo (Option A)** sans actualiser le cube de données ni générer de bulletin par l'Agent RAG, le fichier `.env` n'est pas strictement nécessaire pour démarrer l'application.*
 
 ---
 
