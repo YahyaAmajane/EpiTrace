@@ -38,6 +38,21 @@ plugins:
       handlers:
         python:
           paths: [.] # Permet de trouver les modules dans le dossier racine et les sous-dossiers
+          setup_commands:
+            - import sys
+            - from unittest.mock import MagicMock
+            - sys.modules['tensorflow'] = MagicMock()
+            - sys.modules['tensorflow.keras'] = MagicMock()
+            - sys.modules['tensorflow.keras.models'] = MagicMock()
+            - sys.modules['joblib'] = MagicMock()
+            - sys.modules['prophet'] = MagicMock()
+            - sys.modules['statsmodels'] = MagicMock()
+            - sys.modules['pmdarima'] = MagicMock()
+            - sys.modules['google'] = MagicMock()
+            - sys.modules['google.genai'] = MagicMock()
+            - sys.modules['streamlit'] = MagicMock()
+            - sys.modules['plotly'] = MagicMock()
+            - sys.modules['requests'] = MagicMock()
 
 markdown_extensions:
   - pymdownx.highlight:

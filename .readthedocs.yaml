@@ -1,0 +1,15 @@
+version: 2
+
+build:
+  os: ubuntu-24.04
+  tools:
+    python: "3.11"
+
+# Build documentation with MkDocs
+mkdocs:
+  configuration: mkdocs.yml
+
+# Install only documentation dependencies to avoid building heavy ML packages on RTD
+python:
+  install:
+    - requirements: docs/requirements.txt
