@@ -24,28 +24,30 @@ Epi-Trace combine deux modèles de Deep Learning pour éliminer cette latence :
 ```mermaid
 graph TD
     subgraph "Données Temps Réel (Latence 0j)"
-        A1[Google Trends via SerpAPI]
-        A2[Open-Meteo API]
-        A3[Incidence Historique S-11 à S-1]
+        A1["Signaux Web (Google Trends)"]
+        A2["Signaux Climat (Open-Meteo)"]
+        A3["Incidence Clinique Historique (S-11 à S-1)"]
         A4["Calendrier Scolaire (Ratio Vacances)"]
     end
 
-    subgraph "Étape 1 : NOWCASTING"
+    subgraph "Étape 1 : NOWCASTING (Estimation S0)"
         B[Nowcaster MLP]
         A1 --> B
         A2 --> B
         A3 --> B
         A4 --> B
-        C[Estimation présent : S0]
+        C["Incidence Présente Estimée (S0)"]
         B --> C
     end
 
-    subgraph "Étape 2 : FORECASTING"
+    subgraph "Étape 2 : FORECASTING (Prédiction S+1)"
         D[Forecaster BiLSTM]
-        C --> D
+        A1 --> D
+        A2 --> D
         A3 --> D
         A4 --> D
-        E[Prédiction Futur : S+1]
+        C -->|Injection du présent S0| D
+        E["Prédiction Incidence Future (S+1)"]
         D --> E
     end
 
