@@ -1,6 +1,6 @@
 # 🔌 Référence de l'API Python & Modèles d'IA
 
-Cette section contient la documentation technique des modules Python d'Epi-Trace, le schéma de données du cube OLAP et les fiches techniques des modèles de Deep Learning.
+Cette section contient la documentation technique détaillée de l'ensemble des modules Python d'Epi-Trace, le schéma du cube OLAP et les fiches techniques des modèles de Deep Learning.
 
 ---
 
@@ -47,10 +47,114 @@ Le cube de données final (`data/traitees/epitrace_cube_live.csv`) est un cube O
 
 ## 💻 3. Documentation des Modules Python
 
-Les documentations suivantes sont extraites directement des docstrings de votre code via `mkdocstrings`.
+### 🔄 Pipeline ETL d'Orchestration (`build_live_cube.py`)
 
-### Module Utilitaire de l'Application (`app/app_utils.py`)
-Ce module gère le chargement en cache des modèles de Deep Learning (Nowcaster & Forecaster), les transformations de scalers et le calcul des percentiles épidémiques pour les alertes.
+Ce script coordonne l'extraction, le traitement et la fusion de toutes les sources de données (clinique, météo, trends) pour générer le cube OLAP en direct.
+
+#### `process_sentinelles`
+```python
+def process_sentinelles(nom_fichier="sentinelles_latest.csv", fenetre_semaines=60):
+```
+* **Description** : Lit le fichier brut du Réseau Sentinelles, filtre uniquement la région Île-de-France (Code INSEE `11`), convertit la semaine ISO en date et extrait les X dernières semaines.
+* **Paramètres** :
+    - `nom_fichier` (*str*) : Nom du fichier Sentinelles dans `data/brutes/`.
+    - `fenetre_semaines` (*int*) : Nombre de semaines d'historique à conserver (par défaut `60`).
+* **Retour** : Un tuple `(df_recent, date_min, date_max)` contenant le DataFrame des données nettoyées et les bornes temporelles.
+
+#### `process_meteo`
+```python
+def process_meteo(date_min, date_max):
+```
+* **Description** : Interroge l'API Open-Meteo pour récupérer l'historique horaire de température et d'humidité sur les coordonnées géographiques de Paris de `date_min` à `date_max + 7 jours`, puis agrège ces données par moyenne hebdomadaire.
+* **Paramètres** :
+    - `date_min` (*datetime*) : Date de début de la fenêtre d'observation.
+    - `date_max` (*datetime*) : Date de fin de la fenêtre d'observation.
+* **Retour** : Un DataFrame Pandas contenant les colonnes `date`, `temperature_2m` et `relative_humidity_2m`.
+
+#### `process_trends`
+```python
+def process_trends(date_min, date_max):
+```
+* **Description** : Récupère les données d'infodémiologie via SerpAPI pour les requêtes "toux", "grippe" et "fievre" sur la période donnée pour la région Île-de-France.
+* **Paramètres** :
+    - `date_min` (*datetime*) : Date de début.
+    - `date_max` (*datetime*) : Date de fin.
+* **Retour** : Un DataFrame Pandas contenant les tendances d'intérêt Google Trends associées.
+
+#### `calc_ratio_vacances`
+```python
+def calc_ratio_vacances(date_dimanche):
+```
+* **Description** : Calcule la proportion de la semaine (lundi au dimanche) passée en vacances scolaires de Zone C (Île-de-France) sous forme de valeur continue $\in [0.0, 1.0]$.
+* **Paramètres** :
+    - `date_dimanche` (*datetime*) : Date représentant la fin de la semaine.
+* **Retour** : Un `float` représentant le ratio de vacances.
+
+---
+
+### 🌤️ Module d'Extraction Météo (`src/extract_meteo.py`)
+
+Ce script permet de collecter les données physiques météorologiques sur de longues périodes d'archives.
+
+#### `fetch_open_meteo_data`
+```python
+def fetch_open_meteo_data(lat, lon, start_date, end_date, filename):
+```
+* **Description** : Envoie une requête à l'API d'archive d'Open-Meteo pour obtenir les observations horaires (température, humidité, précipitations, vitesse du vent) et enregistre le résultat au format CSV brut dans le dossier `data/brutes/`.
+* **Paramètres** :
+    - `lat` (*float*) : Latitude géographique (ex: `48.8566` pour Paris).
+    - `lon` (*float*) : Longitude géographique (ex: `2.3522` pour Paris).
+    - `start_date` (*str*) : Date de début au format `YYYY-MM-DD`.
+    - `end_date` (*str*) : Date de fin au format `YYYY-MM-DD`.
+    - `filename` (*str*) : Nom du fichier de sortie CSV.
+* **Retour** : Un DataFrame Pandas contenant l'historique brut des conditions horaires.
+
+---
+
+### 🩺 Module de Nettoyage Clinique (`src/extract_sentinelles.py`)
+
+Ce script nettoie le jeu de données épidémiologiques brutes publiées nationalement.
+
+#### `clean_local_sentinelles_data`
+```python
+def clean_local_sentinelles_data(input_filename, output_filename):
+```
+* **Description** : Charge le fichier CSV national, extrait l'incidence épidémique de l'Île-de-France (Code INSEE `11`) et extrait uniquement les variables de semaine ISO (`week`) et le nombre de cas d'incidence (`inc`). Enregistre le fichier filtré dans `data/brutes/`.
+* **Paramètres** :
+    - `input_filename` (*str*) : Nom du fichier national d'entrée.
+    - `output_filename` (*str*) : Nom du fichier de sortie régionalisé.
+* **Retour** : `None`.
+
+---
+
+### 📈 Module d'Extraction Google Trends (`src/extract_trends.py`)
+
+Ce script scrape l'intérêt de recherche Google pour un ensemble de symptômes et médicaments.
+
+#### `fetch_aggregated_trends`
+```python
+def fetch_aggregated_trends(query, column_name, geo, api_key):
+```
+* **Description** : Interroge SerpAPI pour récupérer l'historique Google Trends d'une requête spécifique.
+* **Technique Data Engineer** : Pour contourner la limite de 5 ans de Google Trends (qui basculerait les résultats en grain mensuel), le script découpe le temps en "chunks" inférieurs à 5 ans et réalise ensuite un alignement et une fusion chronologique.
+* **Paramètres** :
+    - `query` (*str*) : Expression recherchée (ex: `toux + sirop toux`).
+    - `column_name` (*str*) : Nom de colonne à assigner dans le DataFrame final.
+    - `geo` (*str*) : Code géographique régional (ex: `FR-J` pour l'Île-de-France).
+    - `api_key` (*str*) : Clé SerpAPI.
+* **Retour** : Un DataFrame Pandas contenant les dates et les valeurs d'intérêt associées.
+
+#### `build_candidates_matrix`
+```python
+def build_candidates_matrix():
+```
+* **Description** : Fonction principale du module. Scrape séquentiellement 9 topics médicaux (grippe, fièvre, toux, paracétamol, etc.), applique des pauses de sécurité de 1.5 seconde pour éviter les bans d'API et fusionne le tout dans un unique CSV brut : `trends_9_topics_idf.csv`.
+* **Paramètres** : Aucun.
+* **Retour** : `None`.
+
+---
+
+### 🖥️ Module Utilitaire de l'Application (`app/app_utils.py`)
 
 ::: app.app_utils
     options:
@@ -59,50 +163,9 @@ Ce module gère le chargement en cache des modèles de Deep Learning (Nowcaster 
 
 ---
 
-### Module de l'Agent Décisionnel RAG (`src/agent_llm.py`)
-Ce module configure l'agent RAG utilisant Gemini 2.5 Flash pour analyser les prédictions d'incidence sous le protocole ORSAN REB du Ministère de la Santé.
+### 🤖 Module de l'Agent Décisionnel RAG (`src/agent_llm.py`)
 
 ::: src.agent_llm
-    options:
-      show_source: true
-      show_root_heading: true
-
----
-
-### Pipeline ETL Live (`build_live_cube.py`)
-Ce script orchestre en direct l'interrogation des API (SentiWeb, Open-Meteo et SerpAPI) et réalise l'alignement temporel des données pour générer le cube live hebdomadaire.
-
-::: build_live_cube
-    options:
-      show_source: true
-      show_root_heading: true
-
----
-
-### Module d'Extraction Météo (`src/extract_meteo.py`)
-Ce module extrait les archives climatiques horaires et récentes (température, humidité, précipitations, vent) depuis l'API Open-Meteo et les agrège localement.
-
-::: src.extract_meteo
-    options:
-      show_source: true
-      show_root_heading: true
-
----
-
-### Module de Nettoyage Clinique (`src/extract_sentinelles.py`)
-Ce module importe la vérité terrain hebdomadaire du Réseau Sentinelles, filtre géographiquement pour l'Île-de-France et formate les cas d'incidences.
-
-::: src.extract_sentinelles
-    options:
-      show_source: true
-      show_root_heading: true
-
----
-
-### Module d'Extraction Google Trends (`src/extract_trends.py`)
-Ce module gère le scraping et l'extraction des volumes de recherche Google Trends via l'API SerpAPI en utilisant un découpage par chunks temporels pour forcer l'agrégation hebdomadaire stable.
-
-::: src.extract_trends
     options:
       show_source: true
       show_root_heading: true
