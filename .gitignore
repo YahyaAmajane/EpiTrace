@@ -10,3 +10,6 @@ __pycache__/
 
 # !data/brutes/.gitkeep
 # !data/traitees/.gitkeep
+
+# Ignorer le dossier de build MkDocs
+site/

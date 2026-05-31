@@ -23,43 +23,44 @@ Epi-Trace combine deux modèles de Deep Learning pour éliminer cette latence :
 
 ```mermaid
 graph TD
-    subgraph "Données Temps Réel (Latence 0j)"
-        A1["Signaux Web (Google Trends)"]
-        A2["Signaux Climat (Open-Meteo)"]
-        A3["Incidence Clinique Historique (S-11 à S-1)"]
-        A4["Calendrier Scolaire (Ratio Vacances)"]
+    subgraph "Données d'Entrée (Fenêtre Glissante de 12 Semaines)"
+        A1["Google Trends (T-11 à T0)"]
+        A2["Météo: Temp & Humidité (T-11 à T0)"]
+        A3["Calendrier Scolaire: Ratio Vacances (T-11 à T0)"]
+        A4["Incidence Clinique Passée (T-11 à T-1)"]
     end
 
-    subgraph "Étape 1 : NOWCASTING (Estimation S0)"
-        B[Nowcaster MLP]
-        C["Incidence Présente Estimée (S0)"]
-        B --> C
+    subgraph "Étape 1 : NOWCASTING (Estimation S0 à T0)"
+        B["Nowcaster (MLP Delta)"]
+        C["Incidence Estimée S0 (T0)"]
+        B -->|Prédit la variation delta| C
     end
 
-    subgraph "Étape 2 : FORECASTING (Prédiction S+1)"
-        D[Forecaster BiLSTM]
-        E["Prédiction Incidence Future (S+1)"]
+    subgraph "Étape 2 : FORECASTING (Prédiction S+1 à T+1)"
+        D["Forecaster (BiLSTM)"]
+        E["Prédiction Incidence Future S+1 (T+1)"]
         D --> E
     end
 
-    subgraph "Étape 3 : DÉCISION"
-        F[Application Streamlit]
-        G[Agent RAG Gemini + Protocole ORSAN]
+    subgraph "Étape 3 : AIDE À LA DÉCISION"
+        F["Dashboard Streamlit (KPIs & Alerte Orsan)"]
+        G["Agent RAG Gemini + Protocole ORSAN"]
         E --> F
         E --> G
     end
 
-    %% Relations transverses (définies hors des subgraphs pour éviter les erreurs de rendu)
-    A1 --> B
-    A2 --> B
-    A3 --> B
-    A4 --> B
+    %% Relations & Alignements des Tenseurs
+    A1 -->|Exogènes (T-11 à T0)| B
+    A2 -->|Exogènes (T-11 à T0)| B
+    A3 -->|Exogènes (T-11 à T0)| B
+    A4 -->|Inertie historique (T-11 à T-1)| B
 
-    A1 --> D
-    A2 --> D
-    A3 --> D
-    A4 --> D
-    C -->|Injection du présent S0| D
+    %% Le Forecaster prend la séquence complète de 12 semaines (12, 7)
+    A1 -->|Google Trends (12 sem)| D
+    A2 -->|Météo (12 sem)| D
+    A3 -->|Ratio Vacances (12 sem)| D
+    A4 -->|Incidence historique (11 sem)| D
+    C -->|Injection S0 (Complète le tenseur à 12 sem)| D
 
     style C fill:#FF9500,stroke:#333,stroke-width:2px,color:#000
     style E fill:#00C6FF,stroke:#333,stroke-width:2px,color:#000

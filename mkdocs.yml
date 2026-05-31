@@ -1,0 +1,62 @@
+site_name: Epi-Trace
+site_url: https://epitrace.readthedocs.io
+repo_url: https://github.com/YahyaAmajane/EpiTrace
+repo_name: YahyaAmajane/EpiTrace
+
+theme:
+  name: material
+  language: fr
+  palette:
+    # Mode sombre (par défaut)
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: cyan
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Passer au mode clair
+    # Mode clair
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: cyan
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Passer au mode sombre
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [.] # Permet de trouver les modules dans le dossier racine et les sous-dossiers
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - attr_list
+  - md_in_html
+
+nav:
+  - Accueil: index.md
+  - Guide d'Installation: installation.md
+  - Architecture IA & Cascade: architecture.md
+  - Centre de Commandement: dashboard.md
+  - Référence API Python: reference_api.md
+  - Protocole RAG ORSAN: protocole_orsan_reb.md
