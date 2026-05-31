@@ -10,5 +10,3 @@ __pycache__/
 
 # !data/brutes/.gitkeep
 # !data/traitees/.gitkeep
-
-!data/traitees/epitrace_cube_olap_final.csv
