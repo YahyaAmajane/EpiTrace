@@ -10,6 +10,7 @@ Avant toute modélisation, chaque variable du cube a été analysée et validée
 
 ### Corrélation de Pearson (Force du signal synchrone)
 * **Topic_Toux** ($r = +0.842$) et **Topic_Grippe** ($r = +0.812$) : Forte corrélation avec l'incidence clinique.
+* **Topic_Grippe** en particulier montre que le volume de recherche est un indicateur synchrone extrêmement puissant de l'intensité de l'épidémie.
 * **Température** ($r = −0.604$) : Corrélation négative marquée (le froid engendre une hausse de l'incidence).
 
 ### Causalité de Granger ($p \text{ } \lt \text{ } 0.05$)
@@ -17,7 +18,7 @@ Nous avons soumis nos séries temporelles à des tests de causalité de Granger 
 
 * **Humidité** ($p = 0.0058$ au lag de 2 semaines) $\to$ **Causal** ✅
 * **Température** ($p = 0.0185$ au lag de 4 semaines) $\to$ **Causal** ✅
-* **Google Trends Grippe/Toux** ($p = 0.0242$ et $p = 0.0347$ au lag de 3 semaines) $\to$ **Causaux** ✅
+* **Google Trends Grippe/Toux** ($p = 0.0242$ et $p = 0.0347$ au lag de 3 semaines) $\to$ **Causaux** ✅. Pour le **Topic_Grippe**, le lag de 3 semaines montre que les recherches web anticipent de près de 21 jours les publications officielles du réseau Sentinelles.
 * **Ratio de vacances scolaires** ($p = 0.0006$ au lag de 1 semaine) $\to$ **Causal** ✅
 
 ### Feature Engineering : Le Ratio Continu de Vacances
@@ -43,7 +44,12 @@ Trois architectures de complexité croissante ont été entraînées et évalué
 ### Modèle Final : BiLSTM (Bidirectional LSTM)
 * **Modèle** : Réseau neuronal récurrent bidirectionnel avec couche `Bidirectional(LSTM(64))`, suivi d'un `Dropout(0.2)` et d'une couche dense de décision.
 * **Principe** : Analyse des séquences dans les deux sens temporels sur une fenêtre glissante de **12 semaines × 7 features** (tenseur d'entrée 3D `(batch, 12, 7)`).
-* **Stratégie anti-overfitting** : Train/Test split chronologique strict (80/20), entraînement du scaler uniquement sur le train, callbacks `EarlyStopping` (patience=10) et `ReduceLROnPlateau`.
+* **Stratégie anti-overfitting (Sur-apprentissage)** :
+    1. **Split Temporel Chronologique (80/20)** : Pas de validation croisée aléatoire (K-Fold) qui mélangerait le futur avec le passé. Le modèle est évalué sur un bloc temporel futur strict (Hiver 2025-2026).
+    2. **Prévention du Data Leakage** : Le scaler `MinMaxScaler` est entraîné (*fitted*) uniquement sur le jeu d'entraînement, ce qui empêche toute fuite d'échelle ou de bornes vers les données de test.
+    3. **Couche de Dropout (0.2)** : Désactive aléatoirement 20% des neurones pendant chaque epoch d'entraînement pour forcer le réseau à apprendre des chemins de décision redondants et robustes.
+    4. **Arrêt Précoce (Early Stopping)** : Callback surveillant la perte de validation (`val_loss`) avec une patience de 10 époques. L'apprentissage s'arrête dès que le modèle commence à sur-apprendre.
+    5. **Ajustement du Taux d'Apprentissage (`ReduceLROnPlateau`)** : Divise le taux d'apprentissage par 2 si la loss de validation stagne pendant 5 époques, permettant de converger proprement dans les minima locaux.
 * **Résultat** : $R^2 = 0.731$ | MAE = 3 095 cas | RMSE = 4 083 cas.
 
 ---
