@@ -50,17 +50,17 @@ graph TD
     end
 
     %% Relations & Alignements des Tenseurs
-    A1 -->|Exogènes (T-11 à T0)| B
-    A2 -->|Exogènes (T-11 à T0)| B
-    A3 -->|Exogènes (T-11 à T0)| B
-    A4 -->|Inertie historique (T-11 à T-1)| B
+    A1 -->|Exogènes de T-11 à T0| B
+    A2 -->|Exogènes de T-11 à T0| B
+    A3 -->|Exogènes de T-11 à T0| B
+    A4 -->|Inertie historique de T-11 à T-1| B
 
-    %% Le Forecaster prend la séquence complète de 12 semaines (12, 7)
-    A1 -->|Google Trends (12 sem)| D
-    A2 -->|Météo (12 sem)| D
-    A3 -->|Ratio Vacances (12 sem)| D
-    A4 -->|Incidence historique (11 sem)| D
-    C -->|Injection S0 (Complète le tenseur à 12 sem)| D
+    %% Le Forecaster prend la séquence complète de 12 semaines
+    A1 -->|Google Trends - 12 sem| D
+    A2 -->|Météo - 12 sem| D
+    A3 -->|Ratio Vacances - 12 sem| D
+    A4 -->|Incidence historique - 11 sem| D
+    C -->|Injection S0 - complétion du tenseur| D
 
     style C fill:#FF9500,stroke:#333,stroke-width:2px,color:#000
     style E fill:#00C6FF,stroke:#333,stroke-width:2px,color:#000
