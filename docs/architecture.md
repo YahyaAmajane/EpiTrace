@@ -20,10 +20,13 @@ Nous avons soumis nos séries temporelles à des tests de causalité de Granger 
 * **Température** ($p = 0.0185$ au lag de 4 semaines) $\to$ **Causal** ✅
 * **Google Trends Grippe/Toux** ($p = 0.0242$ et $p = 0.0347$ au lag de 3 semaines) $\to$ **Causaux** ✅
 * **Ratio de vacances scolaires** ($p = 0.0006$ au lag de 1 semaine) $\to$ **Causal** ✅
+* **Google Trends Fièvre (Topic_Fievre)** ($p \gt 0.05$) $\to$ **Non-causal au sens de Granger** ❌ (mais conservé et exploité activement dans notre architecture, voir ci-dessous).
 
 > [!NOTE]
-> **Pourquoi avoir conservé le `Topic_Fievre` malgré son échec au test de Granger ($p > 0.05$) ?**  
-> Bien que les requêtes associées à la "fièvre" n'apportent pas d'information prédictive statistiquement causale au sens de Granger (qui cherche un décalage temporel linéaire strict), la fièvre est un symptôme clinique clé des Infections Respiratoires Aiguës (IRA). Conserver ce topic dans le cube de caractéristiques permet au réseau de neurones BiLSTM d'apprendre des relations non linéaires complexes et d'évaluer plus précisément la sévérité des pics épidémiques.
+> **Pourquoi avoir conservé et utilisé le `Topic_Fievre` malgré son échec au test de Granger ($p > 0.05$) ?**  
+> 1. **Pertinence Clinique Majeure** : La fièvre (état fébrile) est, avec la toux, le symptôme clinique le plus caractéristique des Infections Respiratoires Aiguës (IRA). Exclure ce signal de recherche web aurait créé un angle mort médical dans les données d'infodémiologie.
+> 2. **Rôle Clé dans le Nowcaster MLP** : Bien qu'il n'anticipe pas l'incidence future dans un modèle linéaire (Granger), le `Topic_Fievre` présente une forte corrélation contemporaine ($r = +0.717$ à lag 0). Il s'agit donc d'une feature indispensable pour le modèle **Nowcaster** qui estime l'incidence en temps réel ($S_0$).
+> 3. **Synergies Non-Linéaires dans le BiLSTM** : Les réseaux de neurones récurrents comme le BiLSTM excellent pour capturer des intéractions complexes et non linéaires entre variables (ex: l'association d'une baisse des températures avec un pic de recherche pour la fièvre et la toux). Conserver le `Topic_Fievre` permet au modèle d'apprentissage profond de mieux évaluer la sévérité des pics épidémiques.
 
 ### Feature Engineering : Le Ratio Continu de Vacances
 Les épidémies hivernales se propageant fortement par le brassage des enfants à l'école, nous avons intégré le calendrier scolaire. Plutôt qu'une variable binaire (0 ou 1) trop abrupte pour la descente de gradient, nous avons conçu un **ratio continu de vacances scolaires** $\in [0.0, 1.0]$. 
