@@ -27,7 +27,7 @@ graph TD
         A1[Google Trends via SerpAPI]
         A2[Open-Meteo API]
         A3[Incidence Historique S-11 à S-1]
-        A4[Calendrier Scolaire (Ratio Vacances)]
+        A4["Calendrier Scolaire (Ratio Vacances)"]
     end
 
     subgraph "Étape 1 : NOWCASTING"
